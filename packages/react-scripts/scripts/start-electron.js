@@ -1,3 +1,14 @@
+/*
+ * This is based on the `main.js` file from https://github.com/electron/electron-quick-start
+ *
+ * The following changes were made:
+ * - Call to `mainWindow.loadURL` modified to `${HOST}:${DEFAULT_PORT}` (webpack-dev-server)
+ * - Styling changes done to `BrowserWindow`
+ *
+ * This is based on a tutorial available at:
+ * https://medium.freecodecamp.org/building-an-electron-application-with-create-react-app-97945861647c
+ */
+
 const electron = require('electron');
 
 // Module to control application life.
@@ -18,7 +29,12 @@ const HOST = process.env.HOST || '0.0.0.0';
 
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600 });
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    titleBarStyle: 'hidden',
+    backgroundColor: '#222', // Make sure this matches the styles in player.js
+  });
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
