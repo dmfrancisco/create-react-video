@@ -1,0 +1,21 @@
+extends: airbnb
+parser: babel-eslint
+plugins:
+  - react
+env:
+  browser: true
+
+rules:
+  react/jsx-filename-extension: 0
+  react/prefer-stateless-function: 0
+  react/forbid-prop-types: 0
+  jsx-a11y/media-has-caption: 0
+  no-return-assign: 0
+  comma-dangle:
+    - error
+    -
+      arrays: always-multiline
+      exports: ignore
+      functions: ignore
+      imports: ignore
+      objects: always-multiline
