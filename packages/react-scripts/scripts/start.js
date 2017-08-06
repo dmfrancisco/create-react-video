@@ -36,10 +36,13 @@ const {
   prepareProxy,
   prepareUrls,
 } = require('react-dev-utils/WebpackDevServerUtils');
-const openBrowser = require('react-dev-utils/openBrowser');
 const paths = require('../config/paths');
 const config = require('../config/webpack.config.dev');
 const createDevServerConfig = require('../config/webpackDevServer.config');
+
+const exec = require('npm-run').exec;
+const path = require('path');
+const joinPath = (...str) => path.join(__dirname, ...str);
 
 const useYarn = fs.existsSync(paths.yarnLockFile);
 const isInteractive = process.stdout.isTTY;
@@ -84,7 +87,12 @@ choosePort(HOST, DEFAULT_PORT)
         clearConsole();
       }
       console.log(chalk.cyan('Starting the development server...\n'));
-      openBrowser(urls.localUrlForBrowser);
+
+      exec(`electron ${joinPath('start-electron.js')}`, (error, stdout, stderr) => {
+        console.log(`electron stdout: ${stdout}`);
+        console.log(`electron stderr: ${stderr}`);
+        if (error) console.log(`electron error: ${error}`);
+      });
     });
 
     ['SIGINT', 'SIGTERM'].forEach(function(sig) {
