@@ -2,59 +2,115 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-const remote = window.require('electron').remote;
+import IconButton from './IconButton';
 
-const Titlebar = styled.div`
-  -webkit-app-region: drag;
+const FPS = 30;
+
+const controlBarGap = 10;
+const controlBarHeight = 32;
+
+const ControlBar = styled.div`
   background: rgba(0,0,0,.5);
-  display: none;
-  font-size: 13px;
-  font-weight: 400;
-  height: 22px;
-  left: 0;
-  line-height: 22px;
+  border-radius: 5px;
+  bottom: ${controlBarGap}px;
+  height: ${controlBarHeight}px;
+  left: ${controlBarGap}px;
+  line-height: ${controlBarHeight - 4}px;
+  margin: 0 auto;
+  max-width: calc(100% - ${controlBarGap * 2}px);
   position: absolute;
-  right: 0;
+  right: ${controlBarGap}px;
   text-align: center;
-`;
-
-const Container = styled.div`
-  background: #222;
-  color: #fff;
-  cursor: default;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif, "Apple Color Emoji";
-  height: 100vh;
-  overflow: hidden;
-  user-select: none;
-  width: 100vw;
-
-  &:hover ${Titlebar} {
-    display: block;
-  }
+  width: 280px;
 `;
 
 export default class Player extends Component {
   static propTypes = {
-    aspectRatio: PropTypes.number.isRequired,
-    children: PropTypes.object.isRequired,
+    children: PropTypes.any,
+    duration: PropTypes.number,
   }
 
   static defaultProps = {
-    aspectRatio: 1,
+    children: null,
+    duration: 10,
+  }
+
+  static childContextTypes = {
+    currentTime: PropTypes.number,
+    play: PropTypes.bool,
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      currentTime: 0,
+      playing: false,
+    };
+  }
+
+  getChildContext() {
+    return {
+      currentTime: this.state.currentTime,
+      play: this.state.playing,
+    };
+  }
+
+  componentDidMount() {
+    this.renderNextFrame();
+  }
+
+  componentDidUpdate() {
+    this.renderNextFrame();
+  }
+
+  backward = () => {
+    this.setState({ currentTime: 0 });
+  }
+
+  forward = () => {
+    this.setState({ currentTime: this.props.duration });
+  }
+
+  play = () => {
+    this.setState({ playing: true });
+  }
+
+  pause = () => {
+    this.setState({ playing: false });
+  }
+
+  renderNextFrame(tick = 1 / FPS) {
+    clearTimeout(this.timer);
+
+    if (!this.state.playing) return;
+
+    if (this.state.currentTime >= this.props.duration) {
+      this.pause();
+    } else {
+      this.timer = setTimeout(() => {
+        this.setState({ currentTime: this.state.currentTime + tick });
+      }, tick * 1000);
+    }
+  }
+
+  renderControls() {
+    return (
+      <ControlBar>
+        <IconButton onClick={this.backward} icon="backward" />
+        { this.state.playing && <IconButton onClick={this.pause} icon="pause" large /> }
+        { !this.state.playing && <IconButton onClick={this.play} icon="play" large /> }
+        <IconButton onClick={this.forward} icon="forward" />
+      </ControlBar>
+    );
   }
 
   render() {
-    remote.getCurrentWindow()
-      .setAspectRatio(this.props.aspectRatio);
-
     return (
-      <Container>
-        <Titlebar>
-          { document.title }
-        </Titlebar>
-
+      <div>
         { this.props.children }
-      </Container>
+        { this.renderControls() }
+      </div>
     );
   }
 }

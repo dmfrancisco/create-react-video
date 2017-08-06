@@ -1,3 +1,8 @@
-import Player from './Player';
+import Gideo from './Gideo';
+import Video from './Video';
 
-export default Player;
+export default Gideo;
+
+export {
+  Video
+};

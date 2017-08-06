@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Player from '@operador6/gideo';
-import Project from './Project';
+import Gideo from '@operador6/gideo';
 
-ReactDOM.render(
-  <Player>
+class Project extends Component {
+  render() {
+    return (
+      <div>
+        Hello, World!
+      </div>
+    );
+  }
+}
+
+ReactDOM.render((
+  <Gideo aspectRatio={1} duration={10}>
     <Project />
-  </Player>,
-  document.getElementById('root'));
+  </Gideo>
+), document.getElementById('root'));
