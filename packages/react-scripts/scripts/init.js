@@ -96,12 +96,12 @@ module.exports = function(
 
   if (useYarn) {
     command = 'yarnpkg';
-    args = ['add'];
+    default_args = ['add'];
   } else {
     command = 'npm';
-    args = ['install', '--save', verbose && '--verbose'].filter(e => e);
+    default_args = ['install', '--save', verbose && '--verbose'].filter(e => e);
   }
-  args.push('react', 'react-dom');
+  let args = default_args.concat(['react', 'react-dom']);
 
   // Install additional template dependencies, if present
   const templateDependenciesPath = path.join(
@@ -130,6 +130,16 @@ module.exports = function(
       console.error(`\`${command} ${args.join(' ')}\` failed`);
       return;
     }
+  }
+
+  // Install gideo
+  args = default_args.concat(['@operador6/gideo']);
+  console.log(`Installing gideo using ${command}...`);
+  console.log();
+  const proc = spawn.sync(command, args, { stdio: 'inherit' });
+  if (proc.status !== 0) {
+    console.error(`\`${command} ${args.join(' ')}\` failed`);
+    return;
   }
 
   // Display the most elegant way to cd.

@@ -1,6 +1,6 @@
 {
-  "name": "gideo",
-  "version": "1.0.0",
+  "name": "@operador6/gideo",
+  "version": "0.1.0",
   "description": "gideo React component",
   "main": "lib/index.js",
   "module": "es/index.js",

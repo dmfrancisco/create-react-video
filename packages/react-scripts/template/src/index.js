@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import Player from '@operador6/gideo';
+import Project from './Project';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+  <Player>
+    <Project />
+  </Player>,
+  document.getElementById('root'));
