@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
@@ -13,6 +13,7 @@ const ControlBar = styled.div`
   background: rgba(0,0,0,.5);
   border-radius: 5px;
   bottom: ${controlBarGap}px;
+  display: none;
   height: ${controlBarHeight}px;
   left: ${controlBarGap}px;
   line-height: ${controlBarHeight - 4}px;
@@ -22,6 +23,15 @@ const ControlBar = styled.div`
   right: ${controlBarGap}px;
   text-align: center;
   width: 280px;
+`;
+
+const Container = styled.div`
+  height: 100vh;
+  width: 100vw;
+
+  &:hover ${ControlBar} {
+    display: block;
+  }
 `;
 
 export default class Player extends Component {
@@ -45,7 +55,7 @@ export default class Player extends Component {
 
     this.state = {
       currentTime: 0,
-      playing: false,
+      playing: true,
     };
   }
 
@@ -62,6 +72,16 @@ export default class Player extends Component {
 
   componentDidUpdate() {
     this.renderNextFrame();
+  }
+
+  getCurrentChildren() {
+    return Children.map(this.props.children, (child) => {
+      const currentTime = this.state.currentTime;
+      const startTime = child.props.start || 0;
+      const endTime = child.props.end || this.props.duration;
+
+      return startTime <= currentTime && endTime >= currentTime ? child : null;
+    });
   }
 
   backward = () => {
@@ -107,10 +127,10 @@ export default class Player extends Component {
 
   render() {
     return (
-      <div>
-        { this.props.children }
+      <Container>
+        { this.getCurrentChildren() }
         { this.renderControls() }
-      </div>
+      </Container>
     );
   }
 }
