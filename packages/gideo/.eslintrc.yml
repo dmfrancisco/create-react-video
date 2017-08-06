@@ -11,6 +11,8 @@ rules:
   react/forbid-prop-types: 0
   jsx-a11y/media-has-caption: 0
   no-return-assign: 0
+  no-unused-expressions: 0
+  no-mixed-operators: 0
   comma-dangle:
     - error
     -

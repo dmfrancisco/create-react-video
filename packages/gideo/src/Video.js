@@ -7,14 +7,6 @@ export default class Video extends Component {
     play: PropTypes.bool,
   }
 
-  static propTypes = {
-    style: PropTypes.object,
-  }
-
-  static defaultProps = {
-    style: null,
-  }
-
   componentDidMount() {
     this.didRender();
   }
@@ -60,17 +52,10 @@ export default class Video extends Component {
   }
 
   render() {
-    const style = Object.assign({
-      maxWidth: '100%',
-      width: '100%',
-      height: '100%',
-    }, this.props.style);
-
     return (
       <video
         ref={node => this.node = node}
         {...this.props}
-        style={style}
         autoPlay={false}
         muted
       />

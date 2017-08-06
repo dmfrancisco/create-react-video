@@ -77,10 +77,10 @@ export default class Player extends Component {
   getCurrentChildren() {
     return Children.map(this.props.children, (child) => {
       const currentTime = this.state.currentTime;
-      const startTime = child.props.start || 0;
+      const beginTime = child.props.begin || 0;
       const endTime = child.props.end || this.props.duration;
 
-      return startTime <= currentTime && endTime >= currentTime ? child : null;
+      return beginTime <= currentTime && endTime >= currentTime ? child : null;
     });
   }
 

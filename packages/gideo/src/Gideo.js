@@ -18,6 +18,7 @@ const Titlebar = styled.div`
   position: absolute;
   right: 0;
   text-align: center;
+  z-index: 9000;
 `;
 
 const Container = styled.div`

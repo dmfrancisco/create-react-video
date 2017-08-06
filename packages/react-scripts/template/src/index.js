@@ -5,15 +5,11 @@ import Gideo from '@operador6/gideo';
 class Project extends Component {
   render() {
     return (
-      <div>
+      <Gideo aspectRatio={1} duration={10}>
         Hello, World!
-      </div>
+      </Gideo>
     );
   }
 }
 
-ReactDOM.render((
-  <Gideo aspectRatio={1} duration={10}>
-    <Project />
-  </Gideo>
-), document.getElementById('root'));
+ReactDOM.render(<Project />, document.getElementById('root'));

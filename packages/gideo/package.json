@@ -21,7 +21,8 @@
   "dependencies": {
     "electron": "^1.6.11",
     "prop-types": "^15.5.10",
-    "styled-components": "^2.1.2"
+    "styled-components": "^2.1.2",
+    "timer-js": "git+ssh://git@github.com:dmfrancisco/timer-js.git"
   },
   "peerDependencies": {
     "react": "15.x"
