@@ -2,9 +2,10 @@ import React, { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import Preview from './Preview';
 import IconButton from './IconButton';
 
-const FPS = 30;
+const FPS = 25;
 
 const controlBarGap = 10;
 const controlBarHeight = 32;
@@ -128,7 +129,9 @@ export default class Player extends Component {
   render() {
     return (
       <Container>
-        { this.getCurrentChildren() }
+        <Preview {...this.props}>
+          { this.getCurrentChildren() }
+        </Preview>
         { this.renderControls() }
       </Container>
     );

@@ -38,16 +38,18 @@ const Container = styled.div`
 
 export default class Gideo extends Component {
   static propTypes = {
-    aspectRatio: PropTypes.number,
+    height: PropTypes.number,
+    width: PropTypes.number,
   }
 
   static defaultProps = {
-    aspectRatio: 1,
+    height: 600,
+    width: 600,
   }
 
   render() {
     remote.getCurrentWindow()
-      .setAspectRatio(this.props.aspectRatio);
+      .setAspectRatio(this.props.width / this.props.height);
 
     return (
       <Container>
