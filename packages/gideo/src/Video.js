@@ -51,9 +51,6 @@ export default class Video extends Component {
 
     if (this.context.play && this.shouldBeVisible()) {
       if (this.node.readyState >= 2) this.node.play();
-      // Adjust the playbackRate a bit to compensate the slowness of the rendering.
-      // 10 is just a random number that yields good results.
-      this.node.playbackRate = 1 - 10 * (this.node.currentTime - this.calcCurrentTime());
     } else {
       // If the player is not playing, update the time.
       // The second condition is just to avoid setting time right after we pause,

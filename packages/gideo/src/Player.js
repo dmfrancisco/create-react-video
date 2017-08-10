@@ -73,8 +73,9 @@ export default class Player extends Component {
     this.renderNextFrame();
   }
 
-  componentDidUpdate() {
-    this.renderNextFrame();
+  componentDidUpdate(prevProps, prevState) {
+    const wasPlaying = prevState.playing;
+    this.renderNextFrame(wasPlaying);
   }
 
   getCurrentChildren() {
@@ -107,7 +108,7 @@ export default class Player extends Component {
     this.setState({ playing: false });
   }
 
-  renderNextFrame(tick = 1 / FPS) {
+  renderNextFrame(wasPlaying = false, tick = 1 / FPS) {
     clearTimeout(this.timer);
 
     if (!this.state.playing) return;
@@ -116,7 +117,15 @@ export default class Player extends Component {
       this.pause();
     } else {
       this.timer = setTimeout(() => {
-        this.setState({ currentTime: this.state.currentTime + tick });
+        const previousClock = (!wasPlaying || !this.state.clock) ? +new Date() : this.state.clock;
+        const currentClock = +new Date();
+        const clockDelta = (currentClock - previousClock) / 1000;
+
+        // console.log(this.state.currentTime)
+        this.setState({
+          clock: currentClock,
+          currentTime: this.state.currentTime + clockDelta,
+        });
       }, tick * 1000);
     }
   }
