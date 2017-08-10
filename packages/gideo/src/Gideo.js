@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import Player from './Player';
 
-const remote = window.require('electron').remote;
+const { remote, webFrame } = window.require('electron');
 
 const Titlebar = styled.div`
   -webkit-app-region: drag;
@@ -48,8 +48,24 @@ export default class Gideo extends Component {
   }
 
   render() {
-    remote.getCurrentWindow()
-      .setAspectRatio(this.props.width / this.props.height);
+    const window = remote.getCurrentWindow();
+    const aspectRatio = this.props.width / this.props.height;
+    const windowWidth = window.getSize()[0];
+    const windowHeight = Math.round(windowWidth * this.props.height / this.props.width);
+    const windowMinWidth = 256;
+    const windowMinHeight = Math.round(windowMinWidth * aspectRatio);
+
+    // Enforce this aspect ratio
+    window.setAspectRatio(aspectRatio);
+
+    // Update the window size
+    // We don't programmatically update width so we know it won't be less than the minimum allowed
+    window.setSize(windowWidth, windowHeight, true);
+    window.setMinimumSize(windowMinWidth, windowMinHeight);
+
+    // Disable zoom
+    webFrame.setVisualZoomLevelLimits(1, 1);
+    webFrame.setLayoutZoomLevelLimits(0, 0);
 
     return (
       <Container>

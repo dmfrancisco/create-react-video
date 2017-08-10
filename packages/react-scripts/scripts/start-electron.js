@@ -30,7 +30,7 @@ const HOST = process.env.HOST || '0.0.0.0';
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
+    width: 600, // For a better experience this should match default props in Gideo.js
     height: 600,
     titleBarStyle: 'hidden',
     backgroundColor: '#222', // Make sure this matches the styles in player.js
