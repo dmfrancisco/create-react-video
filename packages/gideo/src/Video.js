@@ -11,11 +11,13 @@ export default class Video extends Component {
     begin: PropTypes.number.isRequired,
     end: PropTypes.number.isRequired,
     startAt: PropTypes.number,
+    playbackRate: PropTypes.number,
     eager: PropTypes.bool,
   }
 
   static defaultProps = {
     startAt: 0,
+    playbackRate: 1,
     eager: true,
   }
 
@@ -51,6 +53,7 @@ export default class Video extends Component {
 
     if (this.context.play && this.shouldBeVisible()) {
       if (this.node.readyState >= 2) this.node.play();
+      this.node.playbackRate = this.props.playbackRate;
     } else {
       // If the player is not playing, update the time.
       // The second condition is just to avoid setting time right after we pause,
@@ -61,7 +64,7 @@ export default class Video extends Component {
   }
 
   render() {
-    const { startAt, end, eager, ...props } = this.props;
+    const { startAt, end, playbackRate, eager, ...props } = this.props;
 
     return (
       <video
