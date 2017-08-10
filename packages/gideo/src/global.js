@@ -9,7 +9,6 @@ injectGlobal`
   }
   body {
     margin: 0;
-    -webkit-font-smoothing: antialiased;
   }
   div {
     position: absolute;
