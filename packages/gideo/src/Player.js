@@ -38,11 +38,13 @@ const Container = styled.div`
 export default class Player extends Component {
   static propTypes = {
     children: PropTypes.any,
+    startAt: PropTypes.number,
     duration: PropTypes.number,
   }
 
   static defaultProps = {
     children: null,
+    startAt: 0,
     duration: 10,
   }
 
@@ -55,8 +57,8 @@ export default class Player extends Component {
     super(props);
 
     this.state = {
-      currentTime: 0,
-      playing: true,
+      currentTime: this.props.startAt,
+      playing: false,
     };
   }
 
@@ -81,16 +83,20 @@ export default class Player extends Component {
       const beginTime = child.props.begin || 0;
       const endTime = child.props.end || this.props.duration;
 
-      return beginTime <= currentTime && endTime >= currentTime ? child : null;
+      const started = beginTime <= currentTime;
+      const ended = endTime < currentTime;
+
+      if (child.props.eager) return child;
+      return started && !ended ? child : null;
     });
   }
 
   backward = () => {
-    this.setState({ currentTime: 0 });
+    this.setState({ currentTime: 0, playing: false });
   }
 
   forward = () => {
-    this.setState({ currentTime: this.props.duration });
+    this.setState({ currentTime: this.props.duration, playing: false });
   }
 
   play = () => {
