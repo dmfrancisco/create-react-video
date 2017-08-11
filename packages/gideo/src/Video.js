@@ -74,7 +74,7 @@ export default class Video extends Component {
   }
 
   calcNodeCurrentTime(props = this.props) {
-    return props.startAt + (props.visible ? props.currentTime - props.begin : 0);
+    return props.startAt + (props.visible ? (props.currentTime - props.begin) * props.playbackRate : 0);
   }
 
   render() {
