@@ -40,11 +40,13 @@ const Container = styled.div`
 
 export default class Gideo extends Component {
   static propTypes = {
+    title: PropTypes.string,
     height: PropTypes.number,
     width: PropTypes.number,
   }
 
   static defaultProps = {
+    title: null,
     height: 600,
     width: 600,
   }
@@ -98,7 +100,7 @@ export default class Gideo extends Component {
     return (
       <Container className={this.state.inactive && 'is-inactive'}>
         <Titlebar>
-          { document.title }
+          { this.props.title }
         </Titlebar>
         <Player
           inactive={this.state.inactive}
