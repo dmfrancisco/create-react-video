@@ -84,7 +84,8 @@ export default class Media extends Component {
   }
 
   render() {
-    const { startAt, end, playbackRate, visible, currentTime, play, ...props } = this.props;
+    const { startAt, end, playbackRate, visible, currentTime, play,
+      startWith, endWith, startAfter, duration, ...props } = this.props;
 
     switch (this.props.type) {
       case 'video': {

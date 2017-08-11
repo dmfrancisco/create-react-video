@@ -76,16 +76,22 @@ export default class Player extends Component {
   }
 
   getCurrentChildren() {
+    const previousProps = [];
+
     return Children.map(this.props.children, (child) => {
+      const childProps = this.extendProps(previousProps, child.props);
+      previousProps.push(childProps);
+
       const currentTime = this.state.currentTime;
-      const beginTime = child.props.begin || 0;
-      const endTime = child.props.end || this.props.duration;
+      const beginTime = childProps.begin || 0;
+      const endTime = childProps.end || this.props.duration;
 
       const started = beginTime <= currentTime;
       const ended = endTime < currentTime;
 
-      if (child.props.eager) {
+      if (childProps.eager) {
         return React.cloneElement(child, {
+          ...childProps,
           visible: started && !ended,
           currentTime: this.state.currentTime,
           play: this.state.playing,
@@ -93,12 +99,36 @@ export default class Player extends Component {
       }
       if (started && !ended) {
         return React.cloneElement(child, {
+          ...childProps,
           currentTime: this.state.currentTime,
           play: this.state.playing,
         });
       }
       return null;
     });
+  }
+
+  // This is just a higher-level API for dealing with times
+  extendProps(previousProps, childProps) {
+    const props = { ...childProps };
+
+    if (props.startWith) {
+      props.begin = previousProps[previousProps.length + props.startWith].begin;
+      delete props.startWith;
+    }
+    if (props.endWith) {
+      props.end = previousProps[previousProps.length + props.endWith].end;
+      delete props.endWith;
+    }
+    if (props.startAfter) {
+      props.begin = previousProps[previousProps.length + props.startAfter].end;
+      delete props.startAfter;
+    }
+    if (props.duration) {
+      props.end = props.begin + props.duration;
+      delete props.duration;
+    }
+    return props;
   }
 
   handleKeydown = (e) => {

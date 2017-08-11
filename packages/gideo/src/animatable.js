@@ -5,13 +5,15 @@ import Timer from 'timer-js';
 export default function animatable(WrappedComponent) {
   return class extends Component {
     static propTypes = {
-      begin: PropTypes.number.isRequired,
+      begin: PropTypes.number,
       currentTime: PropTypes.number,
-      end: PropTypes.number.isRequired,
+      end: PropTypes.number,
     }
 
     static defaultProps = {
+      begin: null,
       currentTime: null,
+      end: null,
     }
 
     position = (beginValue, endValue, { delay = 0, duration, easing = 'linear' } = {}) => {
