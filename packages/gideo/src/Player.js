@@ -76,6 +76,9 @@ export default class Player extends Component {
   }
 
   componentDidMount() {
+    document.addEventListener('keydown', this.handleKeydown);
+    document.addEventListener('keyup', this.handleKeyup);
+
     this.renderNextFrame();
   }
 
@@ -102,6 +105,37 @@ export default class Player extends Component {
       }
       return started && !ended ? child : null;
     });
+  }
+
+  handleKeydown = (e) => {
+    switch (e.which) {
+      case 32: {
+        if (this.spaceDown) break;
+
+        this.spaceDown = +new Date();
+        this.setState({ playing: !this.state.playing });
+        break;
+      }
+      default:
+    }
+  }
+
+  handleKeyup = (e) => {
+    switch (e.which) {
+      // If space key was quickly pressed, we want the video to toggle its state
+      // If it's a long press, we want it to play and pause on release
+      case 32: {
+        if (!this.spaceDown) break;
+
+        const now = +new Date();
+        if (now - this.spaceDown > 400) {
+          this.setState({ playing: !this.state.playing });
+        }
+        this.spaceDown = false;
+        break;
+      }
+      default:
+    }
   }
 
   handleTimelineClick = (currentTime) => {
