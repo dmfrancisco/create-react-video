@@ -33,7 +33,8 @@ const Container = styled.div`
   width: 100vw;
   -webkit-font-smoothing: antialiased;
 
-  &:hover ${ControlBar} {
+  &:hover ${ControlBar},
+  &.is-inactive ${ControlBar} {
     opacity: 1;
   }
 `;
@@ -41,14 +42,16 @@ const Container = styled.div`
 export default class Player extends Component {
   static propTypes = {
     children: PropTypes.any,
-    startAt: PropTypes.number,
     duration: PropTypes.number,
+    inactive: PropTypes.bool,
+    startAt: PropTypes.number,
   }
 
   static defaultProps = {
     children: null,
-    startAt: 0,
     duration: 10,
+    inactive: false,
+    startAt: 0,
   }
 
   static childContextTypes = {
@@ -161,7 +164,7 @@ export default class Player extends Component {
 
   render() {
     return (
-      <Container>
+      <Container className={this.props.inactive && 'is-inactive'}>
         <Preview {...this.props}>
           { this.getCurrentChildren() }
         </Preview>

@@ -32,7 +32,8 @@ const Container = styled.div`
   user-select: none;
   width: 100vw;
 
-  &:hover ${Titlebar} {
+  &:hover ${Titlebar},
+  &.is-inactive ${Titlebar} {
     opacity: 1;
   }
 `;
@@ -46,6 +47,32 @@ export default class Gideo extends Component {
   static defaultProps = {
     height: 600,
     width: 600,
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      inactive: false,
+    };
+  }
+
+  componentDidMount() {
+    window.addEventListener('blur', this.inactivateWindow);
+    window.addEventListener('focus', this.activateWindow);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('blur', this.inactivateWindow);
+    window.removeEventListener('focus', this.activateWindow);
+  }
+
+  inactivateWindow = () => {
+    this.setState({ inactive: true });
+  }
+
+  activateWindow = () => {
+    this.setState({ inactive: false });
   }
 
   render() {
@@ -69,11 +96,14 @@ export default class Gideo extends Component {
     webFrame.setLayoutZoomLevelLimits(0, 0);
 
     return (
-      <Container>
+      <Container className={this.state.inactive && 'is-inactive'}>
         <Titlebar>
           { document.title }
         </Titlebar>
-        <Player {...this.props} />
+        <Player
+          inactive={this.state.inactive}
+          {...this.props}
+        />
       </Container>
     );
   }

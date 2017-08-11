@@ -34,6 +34,7 @@ function createWindow() {
     height: 600,
     titleBarStyle: 'hidden',
     backgroundColor: '#222', // Make sure this matches the styles in player.js
+    acceptFirstMouse: true,
   });
 
   // and load the index.html of the app.
