@@ -54,24 +54,12 @@ export default class Player extends Component {
     startAt: 0,
   }
 
-  static childContextTypes = {
-    currentTime: PropTypes.number,
-    play: PropTypes.bool,
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
       currentTime: this.props.startAt,
       playing: false,
-    };
-  }
-
-  getChildContext() {
-    return {
-      currentTime: this.state.currentTime,
-      play: this.state.playing,
     };
   }
 
@@ -103,7 +91,13 @@ export default class Player extends Component {
           play: this.state.playing,
         });
       }
-      return started && !ended ? child : null;
+      if (started && !ended) {
+        return React.cloneElement(child, {
+          currentTime: this.state.currentTime,
+          play: this.state.playing,
+        });
+      }
+      return null;
     });
   }
 
