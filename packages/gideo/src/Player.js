@@ -88,7 +88,13 @@ export default class Player extends Component {
       const started = beginTime <= currentTime;
       const ended = endTime < currentTime;
 
-      if (child.props.eager) return child;
+      if (child.props.eager) {
+        return React.cloneElement(child, {
+          visible: started && !ended,
+          currentTime: this.state.currentTime,
+          play: this.state.playing,
+        });
+      }
       return started && !ended ? child : null;
     });
   }
@@ -122,7 +128,6 @@ export default class Player extends Component {
         const currentClock = +new Date();
         const clockDelta = (currentClock - previousClock) / 1000;
 
-        // console.log(this.state.currentTime)
         this.setState({
           clock: currentClock,
           currentTime: this.state.currentTime + clockDelta,

@@ -1,70 +1,84 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-export default class Video extends Component {
-  static contextTypes = {
-    currentTime: PropTypes.number,
-    play: PropTypes.bool,
-  }
+function onLoadedData(node, callback) {
+  if (node.readyState >= 2) return callback();
 
+  const func = () => {
+    node.removeEventListener('loadeddata', func);
+    callback();
+  };
+  node.addEventListener('loadeddata', func);
+}
+
+export default class Video extends Component {
   static propTypes = {
     begin: PropTypes.number.isRequired,
-    end: PropTypes.number.isRequired,
-    startAt: PropTypes.number,
-    playbackRate: PropTypes.number,
+    currentTime: PropTypes.number.isRequired,
     eager: PropTypes.bool,
+    end: PropTypes.number.isRequired,
+    play: PropTypes.bool,
+    playbackRate: PropTypes.number,
+    startAt: PropTypes.number,
+    visible: PropTypes.bool,
   }
 
   static defaultProps = {
-    startAt: 0,
-    playbackRate: 1,
+    currentTime: 0,
     eager: true,
+    play: false,
+    playbackRate: 1,
+    startAt: 0,
+    visible: null,
   }
 
   componentDidMount() {
-    this.didRender();
-  }
-
-  componentDidUpdate() {
-    this.didRender();
-  }
-
-  setTime() {
-    const onLoadedData = () => {
-      this.node.removeEventListener('loadeddata', onLoadedData);
-      this.node.currentTime = this.calcCurrentTime();
-    };
-
-    this.node.addEventListener('loadeddata', onLoadedData);
-    if (this.node.readyState >= 2) onLoadedData();
-  }
-
-  calcCurrentTime() {
-    return Math.max(this.context.currentTime - this.props.begin, 0) + this.props.startAt;
-  }
-
-  shouldBeVisible() {
-    return this.context.currentTime >= this.props.begin &&
-      this.context.currentTime <= this.props.end;
-  }
-
-  didRender() {
-    this.node.hidden = !this.shouldBeVisible();
-
-    if (this.context.play && this.shouldBeVisible()) {
-      if (this.node.readyState >= 2) this.node.play();
+    onLoadedData(this.node, () => {
+      this.node.currentTime = this.calcNodeCurrentTime();
       this.node.playbackRate = this.props.playbackRate;
-    } else {
-      // If the player is not playing, update the time.
-      // The second condition is just to avoid setting time right after we pause,
-      // because the frame may not be exactly the same and so causes a bit of shaking.
-      if (!this.context.play && this.node.paused) this.setTime();
-      this.node.pause();
+      this.node.hidden = !this.props.visible;
+      if (this.props.play) this.node.play();
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const visibleChanged = this.props.visible !== nextProps.visible;
+    const playChanged = this.props.play !== nextProps.play;
+    const propChanged = visibleChanged || playChanged;
+
+    if (!nextProps.play) {
+      onLoadedData(this.node, () => {
+        // If the node is paused or we click backward, reset the time
+        // If the element was playing don't set the time to avoid shaking frame
+        if (this.node.paused || nextProps.currentTime === 0) {
+          this.node.currentTime = this.calcNodeCurrentTime(nextProps);
+        }
+        this.node.pause();
+      });
+    }
+
+    if (propChanged && nextProps.visible && nextProps.play) {
+      onLoadedData(this.node, () => {
+        this.node.play();
+      });
+    }
+
+    if (visibleChanged) {
+      this.node.hidden = !nextProps.visible;
+      if (!nextProps.visible) this.node.pause();
     }
   }
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  calcNodeCurrentTime(props = this.props) {
+    return props.startAt + (props.visible ? props.currentTime - props.begin : 0);
+  }
+
   render() {
-    const { startAt, end, playbackRate, eager, ...props } = this.props;
+    const { startAt, end, playbackRate, eager, visible, currentTime, play, ...props } = this.props;
 
     return (
       <video
