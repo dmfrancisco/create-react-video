@@ -67,6 +67,12 @@ export default class Video extends Component {
       this.node.hidden = !nextProps.visible;
       if (!nextProps.visible) this.node.pause();
     }
+
+    // In case the user moved the current time using the timeline
+    // 1 second is the minimum delta possible using the timeline, since values are rounded to seconds
+    if (nextProps.visible && Math.abs(nextProps.currentTime - this.props.currentTime) >= 1) {
+      this.node.currentTime = this.calcNodeCurrentTime(nextProps);
+    }
   }
 
   shouldComponentUpdate() {

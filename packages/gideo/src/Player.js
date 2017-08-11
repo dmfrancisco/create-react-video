@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Preview from './Preview';
 import IconButton from './IconButton';
+import Timeline from './Timeline';
 
 const FPS = 25;
 
@@ -100,6 +101,10 @@ export default class Player extends Component {
     });
   }
 
+  handleTimelineClick = (currentTime) => {
+    this.setState({ currentTime });
+  }
+
   backward = () => {
     this.setState({ currentTime: 0, playing: false });
   }
@@ -144,6 +149,12 @@ export default class Player extends Component {
         { this.state.playing && <IconButton onClick={this.pause} icon="pause" large /> }
         { !this.state.playing && <IconButton onClick={this.play} icon="play" large /> }
         <IconButton onClick={this.forward} icon="forward" />
+
+        <Timeline
+          currentTime={this.state.currentTime}
+          duration={this.props.duration}
+          onClick={this.handleTimelineClick}
+        />
       </ControlBar>
     );
   }

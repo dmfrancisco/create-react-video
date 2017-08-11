@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "electron": "^1.6.11",
+    "lodash.throttle": "^4.1.1",
     "prop-types": "^15.5.10",
     "styled-components": "^2.1.2",
     "timer-js": "git+ssh://git@github.com:dmfrancisco/timer-js.git"
