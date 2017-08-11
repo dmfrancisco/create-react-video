@@ -7,22 +7,23 @@ import IconButton from './IconButton';
 
 const FPS = 25;
 
-const controlBarGap = 10;
-const controlBarHeight = 32;
+const controlBarGap = 20;
+const controlBarHeight = 60;
 
 const ControlBar = styled.div`
-  background: rgba(0,0,0,.5);
+  background: rgba(0,0,0,.7);
   border-radius: 5px;
   bottom: ${controlBarGap}px;
-  display: none;
   height: ${controlBarHeight}px;
   left: ${controlBarGap}px;
   line-height: ${controlBarHeight - 4}px;
   margin: 0 auto;
   max-width: calc(100% - ${controlBarGap * 2}px);
+  opacity: 0;
   position: absolute;
   right: ${controlBarGap}px;
   text-align: center;
+  transition: opacity 200ms ease-in;
   width: 280px;
 `;
 
@@ -32,7 +33,7 @@ const Container = styled.div`
   -webkit-font-smoothing: antialiased;
 
   &:hover ${ControlBar} {
-    display: block;
+    opacity: 1;
   }
 `;
 

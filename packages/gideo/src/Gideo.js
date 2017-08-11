@@ -8,16 +8,17 @@ const { remote, webFrame } = window.require('electron');
 
 const Titlebar = styled.div`
   -webkit-app-region: drag;
-  background: rgba(0,0,0,.5);
-  display: none;
+  background: rgba(0,0,0,.7);
   font-size: 13px;
   font-weight: 400;
   height: 22px;
   left: 0;
   line-height: 22px;
+  opacity: 0;
   position: absolute;
   right: 0;
   text-align: center;
+  transition: opacity 200ms ease-in;
   z-index: 9000;
 `;
 
@@ -32,7 +33,7 @@ const Container = styled.div`
   width: 100vw;
 
   &:hover ${Titlebar} {
-    display: block;
+    opacity: 1;
   }
 `;
 

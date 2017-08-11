@@ -86,8 +86,8 @@ export default class Icon extends Component {
       <Svg
         viewBox={`0 0 ${size} ${size}`}
         preserveAspectRatio="xMidYMid meet"
-        width={size}
-        height={size}
+        width={size * 2}
+        height={size * 2}
       >
         { this.props.large ? this.renderLargeGraphic() : this.renderGraphic() }
       </Svg>
