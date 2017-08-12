@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import AppMenu from './AppMenu';
 import Player from './Player';
 
-const { remote, webFrame } = window.require('electron');
+const { remote, webFrame, shell } = window.require('electron');
 
 const Titlebar = styled.div`
   -webkit-app-region: drag;
@@ -77,21 +78,28 @@ export default class Gideo extends Component {
     this.setState({ inactive: false });
   }
 
+  handleHelpClick = () => {
+    shell.openExternal('https://github.com/robo54/create-react-video');
+  }
+
+  handleExportClick = () => {
+  }
+
   render() {
-    const window = remote.getCurrentWindow();
+    const appWindow = remote.getCurrentWindow();
     const aspectRatio = this.props.width / this.props.height;
-    const windowWidth = window.getSize()[0];
+    const windowWidth = appWindow.getSize()[0];
     const windowHeight = Math.round(windowWidth * this.props.height / this.props.width);
     const windowMinWidth = 256;
     const windowMinHeight = Math.round(windowMinWidth * aspectRatio);
 
     // Enforce this aspect ratio
-    window.setAspectRatio(aspectRatio);
+    appWindow.setAspectRatio(aspectRatio);
 
     // Update the window size
     // We don't programmatically update width so we know it won't be less than the minimum allowed
-    window.setSize(windowWidth, windowHeight, true);
-    window.setMinimumSize(windowMinWidth, windowMinHeight);
+    appWindow.setSize(windowWidth, windowHeight, true);
+    appWindow.setMinimumSize(windowMinWidth, windowMinHeight);
 
     // Disable zoom
     webFrame.setVisualZoomLevelLimits(1, 1);
@@ -99,6 +107,10 @@ export default class Gideo extends Component {
 
     return (
       <Container className={this.state.inactive && 'is-inactive'}>
+        <AppMenu
+          onHelpClick={this.handleHelpClick}
+          onExportClick={this.handleExportClick}
+        />
         <Titlebar>
           { this.props.title }
         </Titlebar>
