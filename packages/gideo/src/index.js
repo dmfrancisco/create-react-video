@@ -2,7 +2,6 @@ import Timer from 'timer-js';
 
 import './global';
 import Gideo from './Gideo';
-
 import animatable from './animatable';
 import Audio from './Audio';
 import Video from './Video';

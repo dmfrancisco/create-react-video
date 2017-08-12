@@ -1,8 +1,8 @@
-import React, { Component, Children } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import Preview from './Preview';
+import Stage from './Stage';
 import IconButton from './IconButton';
 import Timeline from './Timeline';
 
@@ -31,7 +31,6 @@ const ControlBar = styled.div`
 const Container = styled.div`
   height: 100vh;
   width: 100vw;
-  -webkit-font-smoothing: antialiased;
 
   &:hover ${ControlBar},
   &.is-inactive ${ControlBar} {
@@ -42,15 +41,13 @@ const Container = styled.div`
 export default class Player extends Component {
   static propTypes = {
     children: PropTypes.any,
-    duration: PropTypes.number,
-    inactive: PropTypes.bool,
+    duration: PropTypes.number.isRequired,
+    inactive: PropTypes.bool.isRequired,
     startAt: PropTypes.number,
   }
 
   static defaultProps = {
     children: null,
-    duration: 10,
-    inactive: false,
     startAt: 0,
   }
 
@@ -73,62 +70,6 @@ export default class Player extends Component {
   componentDidUpdate(prevProps, prevState) {
     const wasPlaying = prevState.playing;
     this.renderNextFrame(wasPlaying);
-  }
-
-  getCurrentChildren() {
-    const previousProps = [];
-
-    return Children.map(this.props.children, (child) => {
-      const childProps = this.extendProps(previousProps, child.props);
-      previousProps.push(childProps);
-
-      const currentTime = this.state.currentTime;
-      const beginTime = childProps.begin || 0;
-      const endTime = childProps.end || this.props.duration;
-
-      const started = beginTime <= currentTime;
-      const ended = endTime < currentTime;
-
-      if (childProps.eager) {
-        return React.cloneElement(child, {
-          ...childProps,
-          visible: started && !ended,
-          currentTime: this.state.currentTime,
-          play: this.state.playing,
-        });
-      }
-      if (started && !ended) {
-        return React.cloneElement(child, {
-          ...childProps,
-          currentTime: this.state.currentTime,
-          play: this.state.playing,
-        });
-      }
-      return null;
-    });
-  }
-
-  // This is just a higher-level API for dealing with times
-  extendProps(previousProps, childProps) {
-    const props = { ...childProps };
-
-    if (props.startWith) {
-      props.begin = previousProps[previousProps.length + props.startWith].begin;
-      delete props.startWith;
-    }
-    if (props.endWith) {
-      props.end = previousProps[previousProps.length + props.endWith].end;
-      delete props.endWith;
-    }
-    if (props.startAfter) {
-      props.begin = previousProps[previousProps.length + props.startAfter].end;
-      delete props.startAfter;
-    }
-    if (props.duration) {
-      props.end = props.begin + props.duration;
-      delete props.duration;
-    }
-    return props;
   }
 
   handleKeydown = (e) => {
@@ -223,9 +164,13 @@ export default class Player extends Component {
   render() {
     return (
       <Container className={this.props.inactive && 'is-inactive'}>
-        <Preview {...this.props}>
-          { this.getCurrentChildren() }
-        </Preview>
+        <Stage
+          currentTime={this.state.currentTime}
+          playing={this.state.playing}
+          {...this.props}
+        >
+          { this.props.children }
+        </Stage>
         { this.renderControls() }
       </Container>
     );
