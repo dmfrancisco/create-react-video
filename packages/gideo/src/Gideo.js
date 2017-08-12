@@ -68,6 +68,10 @@ export default class Gideo extends Component {
     const appWindow = remote.getCurrentWindow();
     appWindow.on('enter-full-screen', this.enterFullscreen);
     appWindow.on('leave-full-screen', this.leaveFullscreen);
+
+    // Disable zoom
+    webFrame.setVisualZoomLevelLimits(1, 1);
+    webFrame.setLayoutZoomLevelLimits(0, 0);
   }
 
   componentWillUnmount() {
@@ -113,10 +117,6 @@ export default class Gideo extends Component {
     // We don't programmatically update width so we know it won't be less than the minimum allowed
     appWindow.setSize(windowWidth, windowHeight, true);
     appWindow.setMinimumSize(windowMinWidth, windowMinHeight);
-
-    // Disable zoom
-    webFrame.setVisualZoomLevelLimits(1, 1);
-    webFrame.setLayoutZoomLevelLimits(0, 0);
 
     return (
       <Container className={this.state.inactive && 'is-inactive'}>
