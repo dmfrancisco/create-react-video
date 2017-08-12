@@ -6,10 +6,12 @@ export default class Preview extends Component {
     children: PropTypes.any,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
+    style: PropTypes.object,
   }
 
   static defaultProps = {
     children: null,
+    style: {},
   }
 
   componentDidMount() {
@@ -44,7 +46,7 @@ export default class Preview extends Component {
 
     return (
       <div ref={container => this.container = container} style={style.container}>
-        <div ref={content => this.content = content} style={style.content}>
+        <div ref={content => this.content = content} style={{ ...this.props.style, ...style.content }}>
           { this.props.children }
         </div>
       </div>
