@@ -56,6 +56,7 @@ export default class Gideo extends Component {
     super(props);
 
     this.state = {
+      fullscreen: false,
       inactive: false,
     };
   }
@@ -63,11 +64,23 @@ export default class Gideo extends Component {
   componentDidMount() {
     window.addEventListener('blur', this.inactivateWindow);
     window.addEventListener('focus', this.activateWindow);
+
+    const appWindow = remote.getCurrentWindow();
+    appWindow.on('enter-full-screen', this.enterFullscreen);
+    appWindow.on('leave-full-screen', this.leaveFullscreen);
   }
 
   componentWillUnmount() {
     window.removeEventListener('blur', this.inactivateWindow);
     window.removeEventListener('focus', this.activateWindow);
+  }
+
+  enterFullscreen = () => {
+    this.setState({ fullscreen: true });
+  }
+
+  leaveFullscreen = () => {
+    this.setState({ fullscreen: false });
   }
 
   inactivateWindow = () => {
@@ -111,9 +124,11 @@ export default class Gideo extends Component {
           onHelpClick={this.handleHelpClick}
           onExportClick={this.handleExportClick}
         />
-        <Titlebar>
-          { this.props.title }
-        </Titlebar>
+        { !this.state.fullscreen && (
+          <Titlebar>
+            { this.props.name }
+          </Titlebar>
+        )}
         <Player
           inactive={this.state.inactive}
           {...this.props}
