@@ -11,11 +11,20 @@ function onLoadedData(node, callback) {
   node.addEventListener('loadeddata', func);
 }
 
+function onTimeUpdated(node, callback) {
+  const func = () => {
+    node.removeEventListener('timeupdate', func);
+    callback();
+  };
+  node.addEventListener('timeupdate', func);
+}
+
 export default class Media extends Component {
   static propTypes = {
     begin: PropTypes.number.isRequired,
     currentTime: PropTypes.number.isRequired,
     end: PropTypes.number.isRequired,
+    onReady: PropTypes.func,
     play: PropTypes.bool,
     playbackRate: PropTypes.number,
     startAt: PropTypes.number,
@@ -25,6 +34,7 @@ export default class Media extends Component {
 
   static defaultProps = {
     currentTime: 0,
+    onReady() {},
     play: false,
     playbackRate: 1,
     startAt: 0,
@@ -33,6 +43,7 @@ export default class Media extends Component {
 
   componentDidMount() {
     onLoadedData(this.node, () => {
+      onTimeUpdated(this.node, () => this.props.onReady());
       this.node.currentTime = this.calcNodeCurrentTime();
       this.node.playbackRate = this.props.playbackRate;
       this.node.hidden = !this.props.visible;
@@ -50,6 +61,7 @@ export default class Media extends Component {
         // If the node is paused or we click backward, reset the time
         // If the element was playing don't set the time to avoid shaking frame
         if (this.node.paused || nextProps.currentTime === 0) {
+          onTimeUpdated(this.node, () => this.props.onReady());
           this.node.currentTime = this.calcNodeCurrentTime(nextProps);
         }
         this.node.pause();
@@ -58,7 +70,6 @@ export default class Media extends Component {
 
     if (propChanged && nextProps.visible && nextProps.play) {
       onLoadedData(this.node, () => {
-
         this.node.play();
       });
     }
@@ -85,7 +96,7 @@ export default class Media extends Component {
 
   render() {
     const { startAt, end, playbackRate, visible, currentTime, play,
-      startWith, endWith, startAfter, duration, ...props } = this.props;
+      startWith, endWith, startAfter, duration, onReady, ...props } = this.props;
 
     switch (this.props.type) {
       case 'video': {

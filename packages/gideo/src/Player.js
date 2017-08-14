@@ -72,6 +72,11 @@ export default class Player extends Component {
     this.renderNextFrame(wasPlaying);
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeydown);
+    document.removeEventListener('keyup', this.handleKeyup);
+  }
+
   handleKeydown = (e) => {
     switch (e.which) {
       case 32: {

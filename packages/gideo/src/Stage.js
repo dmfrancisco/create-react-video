@@ -7,13 +7,16 @@ export default class Stage extends Component {
     currentTime: PropTypes.number.isRequired,
     duration: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-    playing: PropTypes.bool.isRequired,
+    onReady: PropTypes.func,
+    playing: PropTypes.bool,
     style: PropTypes.object,
     width: PropTypes.number.isRequired,
   }
 
   static defaultProps = {
     children: null,
+    onReady() {},
+    playing: false,
     style: {},
   }
 
@@ -31,6 +34,8 @@ export default class Stage extends Component {
   }
 
   getCurrentChildren() {
+    this.deferred = 0;
+    this.totalDeferred = 0;
     const previousProps = [];
 
     return Children.map(this.props.children, (child) => {
@@ -45,11 +50,22 @@ export default class Stage extends Component {
       const ended = endTime < currentTime;
 
       if (childProps.eager) {
+        const visible = started && !ended;
+        let onReady = () => {};
+
+        if (visible && !this.props.playing) {
+          this.totalDeferred += 1;
+          onReady = () => {
+            this.deferred += 1;
+            if (this.deferred === this.totalDeferred) this.props.onReady();
+          };
+        }
         return React.cloneElement(child, {
           ...childProps,
-          visible: started && !ended,
+          visible,
           currentTime: this.props.currentTime,
           play: this.props.playing,
+          onReady,
         });
       }
       if (started && !ended) {

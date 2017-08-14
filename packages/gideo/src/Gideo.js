@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import AppMenu from './AppMenu';
 import Player from './Player';
+import Exporter from './Exporter';
 
 const { remote, webFrame, shell } = window.require('electron');
 
@@ -41,14 +42,16 @@ const Container = styled.div`
 
 export default class Gideo extends Component {
   static propTypes = {
-    title: PropTypes.string,
+    name: PropTypes.string,
     height: PropTypes.number,
+    windowMinWidth: PropTypes.number,
     width: PropTypes.number,
   }
 
   static defaultProps = {
-    title: null,
+    name: null,
     height: 600,
+    windowMinWidth: 256,
     width: 600,
   }
 
@@ -56,6 +59,8 @@ export default class Gideo extends Component {
     super(props);
 
     this.state = {
+      exporting: false,
+      exportFilename: null,
       fullscreen: false,
       inactive: false,
     };
@@ -100,14 +105,29 @@ export default class Gideo extends Component {
   }
 
   handleExportClick = () => {
+    const defaultPath = `${this.props.name || 'Video'}.mkv`;
+    const appWindow = remote.getCurrentWindow();
+
+    remote.dialog.showSaveDialog(appWindow, { defaultPath }, (exportFilename) => {
+      this.setState({ exporting: true, exportFilename });
+    });
+  }
+
+  handleExportCompletion = () => {
+    new Notification('Export completed', {
+      body: 'The video file was successfully exported.',
+    });
+    this.setState({ exporting: false, exportFilename: null });
   }
 
   render() {
+    const { exporting, fullscreen, inactive } = this.state;
+
     const appWindow = remote.getCurrentWindow();
     const aspectRatio = this.props.width / this.props.height;
     const windowWidth = appWindow.getSize()[0];
     const windowHeight = Math.round(windowWidth * this.props.height / this.props.width);
-    const windowMinWidth = 256;
+    const windowMinWidth = this.props.windowMinWidth;
     const windowMinHeight = Math.round(windowMinWidth * aspectRatio);
 
     // Enforce this aspect ratio
@@ -119,20 +139,29 @@ export default class Gideo extends Component {
     appWindow.setMinimumSize(windowMinWidth, windowMinHeight);
 
     return (
-      <Container className={this.state.inactive && 'is-inactive'}>
+      <Container className={inactive && 'is-inactive'}>
         <AppMenu
           onHelpClick={this.handleHelpClick}
           onExportClick={this.handleExportClick}
         />
-        { !this.state.fullscreen && (
+        { !fullscreen && !exporting && (
           <Titlebar>
             { this.props.name }
           </Titlebar>
         )}
-        <Player
-          inactive={this.state.inactive}
-          {...this.props}
-        />
+        { !exporting && (
+          <Player
+            inactive={inactive}
+            {...this.props}
+          />
+        )}
+        { exporting && (
+          <Exporter
+            onCompletion={this.handleExportCompletion}
+            exportFilename={this.state.exportFilename}
+            {...this.props}
+          />
+        )}
       </Container>
     );
   }

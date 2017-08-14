@@ -25,7 +25,7 @@ const url = require('url');
 let mainWindow;
 
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
-const HOST = process.env.HOST || '0.0.0.0';
+const HOST = process.env.HOST || 'localhost';
 
 function createWindow() {
   // Create the browser window.
