@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import leftPad from 'left-pad';
 
 import Stage from './Stage';
 import Audio from './Audio';
@@ -74,7 +73,7 @@ export default class Exporter extends Component {
   generateVideo() {
     execa(ffmpeg, [
       '-framerate', FPS,
-      '-i', `${this.state.tmpDir}/%05d.png`,
+      '-i', `${this.state.tmpDir}/%d.png`,
       // Save lossless with fast encoding speed
       '-c:v', 'libx264',
       '-preset', 'ultrafast',
@@ -90,8 +89,7 @@ export default class Exporter extends Component {
 
   generateFrame(frame, callback) {
     appWindow.capturePage((img) => {
-      const framePadded = leftPad(frame, 5, 0);
-      fs.writeFile(`${this.state.tmpDir}/${framePadded}.png`, img.toPng(), callback);
+      fs.writeFile(`${this.state.tmpDir}/${frame}.png`, img.toPng(), callback);
     });
   }
 
