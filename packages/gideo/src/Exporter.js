@@ -29,9 +29,12 @@ export default class Exporter extends Component {
   constructor(props) {
     super(props);
 
+    const tmpDir = fs.mkdtempSync('/tmp/gideo-');
+
     this.state = {
       currentFrame: 0,
-      tmpDir: fs.mkdtempSync('/tmp/gideo-'),
+      tmpDir,
+      tmpVideoOutput: `${tmpDir}/output.mkv`,
       audioChildren: extendChildrenProps(props.children)
         .filter(child => child.type === Audio)
         .map(child => child.props),
@@ -47,7 +50,7 @@ export default class Exporter extends Component {
   }
 
   generateAudio() {
-    const args = ['-i', this.props.exportFilename];
+    const args = ['-i', this.state.tmpVideoOutput];
     const filters = [];
 
     this.state.audioChildren.forEach(props => args.push('-i', `./public/${props.src}`));
@@ -59,7 +62,7 @@ export default class Exporter extends Component {
 
     args.push('-filter_complex', filters.join(''));
     args.push('-map', '0:v', '-map', '[aout]', '-c:v', 'copy', '-c:a', 'aac');
-    args.push('-y', `${this.props.exportFilename}-sound.mkv`);
+    args.push('-y', this.props.exportFilename);
 
     execa(ffmpeg, args)
       .then(() => {
@@ -77,7 +80,7 @@ export default class Exporter extends Component {
       '-preset', 'ultrafast',
       '-crf', '0',
       '-y', // Don't ask the user to override file
-      this.props.exportFilename,
+      this.state.tmpVideoOutput,
     ])
       .then(() => {
         this.generateAudio();
