@@ -30,7 +30,7 @@ export default class Exporter extends Component {
     super(props);
 
     this.state = {
-      currentFrame: 1,
+      currentFrame: 0,
       tmpDir: fs.mkdtempSync('/tmp/gideo-'),
       audioChildren: extendChildrenProps(props.children)
         .filter(child => child.type === Audio)
