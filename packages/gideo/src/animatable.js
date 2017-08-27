@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Timer from 'timer-js';
+import Timer from '@robo54/timer';
 
 export default function animatable(WrappedComponent) {
   return class extends Component {

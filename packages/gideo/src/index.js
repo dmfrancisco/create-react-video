@@ -1,4 +1,4 @@
-import Timer from 'timer-js';
+import Timer from '@robo54/timer';
 
 import './global';
 import Gideo from './Gideo';
