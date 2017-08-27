@@ -86,7 +86,7 @@ export default class Media extends Component {
 
   render() {
     const { startAt, end, playbackRate, visible, currentTime, play, onReady, // eslint-disable-next-line react/prop-types
-      startWith, endWith, startAfter, duration, waitForReady, ...props } = this.props;
+      beginWith, endWith, beginAfter, duration, waitForReady, ...props } = this.props;
 
     switch (this.props.type) {
       case 'video': {

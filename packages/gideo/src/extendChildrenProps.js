@@ -4,17 +4,17 @@ import React, { Children } from 'react';
 function extendChildProps(previous, childProps) {
   const props = { ...childProps };
 
-  if (props.startWith) {
-    props.begin = previous[previous.length + props.startWith].props.begin;
-    props.startWith = null;
+  if (props.beginWith) {
+    props.begin = previous[previous.length + props.beginWith].props.begin;
+    props.beginWith = null;
   }
   if (props.endWith) {
     props.end = previous[previous.length + props.endWith].props.end;
     props.endWith = null;
   }
-  if (props.startAfter) {
-    props.begin = previous[previous.length + props.startAfter].props.end;
-    props.startAfter = null;
+  if (props.beginAfter) {
+    props.begin = previous[previous.length + props.beginAfter].props.end;
+    props.beginAfter = null;
   }
   if (props.duration) {
     props.end = props.begin + props.duration;
