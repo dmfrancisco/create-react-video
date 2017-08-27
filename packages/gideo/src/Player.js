@@ -109,7 +109,7 @@ export default class Player extends Component {
   }
 
   handleTimelineClick = (currentTime) => {
-    this.setState({ currentTime });
+    this.setState({ currentTime, playing: false });
   }
 
   backward = () => {

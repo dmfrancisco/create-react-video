@@ -12,7 +12,7 @@ export default class Timeline extends Component {
   constructor(props) {
     super(props);
 
-    this.onClick = throttle(this.onClick, 100);
+    this.onClick = throttle(this.onClick, 500);
   }
 
   onClick = (time) => {
