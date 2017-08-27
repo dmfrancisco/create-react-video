@@ -86,6 +86,14 @@ export default class Player extends Component {
         this.setState({ playing: !this.state.playing });
         break;
       }
+      case 39: {
+        this.setState({ playing: false, currentTime: this.state.currentTime + 1 / FPS });
+        break;
+      }
+      case 37: {
+        this.setState({ playing: false, currentTime: this.state.currentTime - 1 / FPS });
+        break;
+      }
       default:
     }
   }
