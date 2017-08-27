@@ -6,6 +6,7 @@ export default class Stage extends Component {
     children: PropTypes.any,
     currentTime: PropTypes.number.isRequired,
     duration: PropTypes.number.isRequired,
+    exporting: PropTypes.bool,
     height: PropTypes.number.isRequired,
     onReady: PropTypes.func,
     playing: PropTypes.bool,
@@ -15,6 +16,7 @@ export default class Stage extends Component {
 
   static defaultProps = {
     children: null,
+    exporting: false,
     onReady() {},
     playing: false,
     style: {},
@@ -23,6 +25,11 @@ export default class Stage extends Component {
   componentDidMount() {
     window.addEventListener('resize', this.onResize);
     this.onResize();
+    if (this.totalDeferred === 0) this.props.onReady();
+  }
+
+  componentDidUpdate() {
+    if (this.totalDeferred === 0) this.props.onReady();
   }
 
   componentWillUnmount() {
@@ -48,32 +55,27 @@ export default class Stage extends Component {
 
       const started = beginTime <= currentTime;
       const ended = endTime < currentTime;
+      const visible = started && !ended;
 
-      if (childProps.eager) {
-        const visible = started && !ended;
-        let onReady = () => {};
+      Object.assign(childProps, {
+        currentTime: this.props.currentTime,
+        play: this.props.playing,
+        visible,
+      });
 
-        if (visible && !this.props.playing) {
-          this.totalDeferred += 1;
-          onReady = () => {
+      if (this.props.exporting && visible && childProps.waitForReady) {
+        this.totalDeferred += 1;
+
+        return React.cloneElement(child, {
+          ...childProps,
+          onReady: () => {
             this.deferred += 1;
             if (this.deferred === this.totalDeferred) this.props.onReady();
-          };
-        }
-        return React.cloneElement(child, {
-          ...childProps,
-          visible,
-          currentTime: this.props.currentTime,
-          play: this.props.playing,
-          onReady,
+          },
         });
       }
-      if (started && !ended) {
-        return React.cloneElement(child, {
-          ...childProps,
-          currentTime: this.props.currentTime,
-          play: this.props.playing,
-        });
+      if (visible || (childProps.eager && !this.props.exporting)) {
+        return React.cloneElement(child, childProps);
       }
       return null;
     });

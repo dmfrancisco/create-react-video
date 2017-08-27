@@ -8,7 +8,6 @@ import extendChildrenProps from './extendChildrenProps';
 
 const { remote } = window.require('electron');
 const execa = remote.require('execa');
-const rimraf = remote.require('rimraf');
 const fs = remote.require('fs');
 const appWindow = remote.getCurrentWindow();
 
@@ -19,13 +18,12 @@ export default class Exporter extends Component {
   static propTypes = {
     children: PropTypes.any,
     duration: PropTypes.number.isRequired,
-    exportFilename: PropTypes.string,
+    exportFilename: PropTypes.string.isRequired,
     onCompletion: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     children: null,
-    exportFilename: 'Video.mkv',
   }
 
   constructor(props) {
@@ -99,18 +97,22 @@ export default class Exporter extends Component {
       this.generateVideo();
     } else {
       this.generateFrame(this.state.currentFrame, (error) => {
-        if (error) return console.error(error);
-
-        setTimeout(() => {
-          this.setState({ currentFrame: this.state.currentFrame + 1 });
-        }, 50);
+        let nextFrame = this.state.currentFrame + 1;
+        if (error) {
+          console.error(error);
+          nextFrame -= 1;
+        }
+        this.setState({ currentFrame: nextFrame });
       });
     }
   }
 
   render() {
+    console.log('Rendering frame', this.state.currentFrame);
+
     return (
       <Stage
+        exporting
         currentTime={this.frameToTime(this.state.currentFrame)}
         onReady={this.renderNextFrame}
         {...this.props}

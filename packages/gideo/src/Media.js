@@ -43,7 +43,7 @@ export default class Media extends Component {
 
   componentDidMount() {
     onLoadedData(this.node, () => {
-      onTimeUpdated(this.node, () => this.props.onReady());
+      onTimeUpdated(this.node, () => window.requestAnimationFrame(this.props.onReady));
       this.node.currentTime = this.calcNodeCurrentTime();
       this.node.playbackRate = this.props.playbackRate;
       this.node.hidden = !this.props.visible;
@@ -58,12 +58,8 @@ export default class Media extends Component {
 
     if (!nextProps.play) {
       onLoadedData(this.node, () => {
-        // If the node is paused or we click backward, reset the time
-        // If the element was playing don't set the time to avoid shaking frame
-        if (this.node.paused || nextProps.currentTime === 0) {
-          onTimeUpdated(this.node, () => this.props.onReady());
-          this.node.currentTime = this.calcNodeCurrentTime(nextProps);
-        }
+        onTimeUpdated(this.node, () => window.requestAnimationFrame(this.props.onReady));
+        this.node.currentTime = this.calcNodeCurrentTime(nextProps);
         this.node.pause();
       });
     }
@@ -78,12 +74,6 @@ export default class Media extends Component {
       this.node.hidden = !nextProps.visible;
       if (!nextProps.visible) this.node.pause();
     }
-
-    // In case the user moved the current time using the timeline
-    // 1 second is the minimum delta possible using the timeline, since values are rounded to seconds
-    if (nextProps.visible && Math.abs(nextProps.currentTime - this.props.currentTime) >= 1) {
-      this.node.currentTime = this.calcNodeCurrentTime(nextProps);
-    }
   }
 
   shouldComponentUpdate() {
@@ -95,8 +85,8 @@ export default class Media extends Component {
   }
 
   render() {
-    const { startAt, end, playbackRate, visible, currentTime, play,
-      startWith, endWith, startAfter, duration, onReady, ...props } = this.props;
+    const { startAt, end, playbackRate, visible, currentTime, play, onReady, // eslint-disable-next-line react/prop-types
+      startWith, endWith, startAfter, duration, waitForReady, ...props } = this.props;
 
     switch (this.props.type) {
       case 'video': {
@@ -106,6 +96,7 @@ export default class Media extends Component {
             {...props}
             autoPlay={false}
             muted
+            hidden
           />
         );
       }

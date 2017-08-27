@@ -6,10 +6,12 @@ import Media from './Media';
 export default class Video extends Component {
   static propTypes = {
     eager: PropTypes.bool,
+    waitForReady: PropTypes.bool,
   }
 
   static defaultProps = {
     eager: true,
+    waitForReady: true,
   }
 
   render() {
