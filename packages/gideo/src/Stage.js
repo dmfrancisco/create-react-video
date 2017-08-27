@@ -1,6 +1,8 @@
 import React, { Component, Children } from 'react';
 import PropTypes from 'prop-types';
 
+import extendChildrenProps from './extendChildrenProps';
+
 export default class Stage extends Component {
   static propTypes = {
     children: PropTypes.any,
@@ -41,27 +43,26 @@ export default class Stage extends Component {
   }
 
   getCurrentChildren() {
+    const children = extendChildrenProps(this.props.children);
+
     this.deferred = 0;
     this.totalDeferred = 0;
-    const previousProps = [];
 
-    return Children.map(this.props.children, (child) => {
-      const childProps = this.extendProps(previousProps, child.props);
-      previousProps.push(childProps);
-
+    return children.map((child, index) => {
       const currentTime = this.props.currentTime;
-      const beginTime = childProps.begin || 0;
-      const endTime = childProps.end || this.props.duration;
-
+      const beginTime = child.props.begin || 0;
+      const endTime = child.props.end || this.props.duration;
       const started = beginTime <= currentTime;
       const ended = endTime < currentTime;
       const visible = started && !ended;
 
-      Object.assign(childProps, {
-        currentTime: this.props.currentTime,
+      const childProps = {
+        ...child.props,
+        key: index,
         play: this.props.playing,
+        currentTime,
         visible,
-      });
+      };
 
       if (this.props.exporting && visible && childProps.waitForReady) {
         this.totalDeferred += 1;
@@ -79,29 +80,6 @@ export default class Stage extends Component {
       }
       return null;
     });
-  }
-
-  // This is just a higher-level API for dealing with times
-  extendProps(previousProps, childProps) {
-    const props = { ...childProps };
-
-    if (props.startWith) {
-      props.begin = previousProps[previousProps.length + props.startWith].begin;
-      delete props.startWith;
-    }
-    if (props.endWith) {
-      props.end = previousProps[previousProps.length + props.endWith].end;
-      delete props.endWith;
-    }
-    if (props.startAfter) {
-      props.begin = previousProps[previousProps.length + props.startAfter].end;
-      delete props.startAfter;
-    }
-    if (props.duration) {
-      props.end = props.begin + props.duration;
-      delete props.duration;
-    }
-    return props;
   }
 
   render() {
