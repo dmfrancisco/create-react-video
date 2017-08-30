@@ -89,16 +89,16 @@ module.exports = function(
   );
 
   let command;
-  let args;
+  let defaultArgs;
 
   if (useYarn) {
     command = 'yarnpkg';
-    default_args = ['add'];
+    defaultArgs = ['add'];
   } else {
     command = 'npm';
-    default_args = ['install', '--save', verbose && '--verbose'].filter(e => e);
+    defaultArgs = ['install', '--save', verbose && '--verbose'].filter(e => e);
   }
-  let args = default_args.concat(['react', 'react-dom']);
+  let args = defaultArgs.concat(['react', 'react-dom']);
 
   // Install additional template dependencies, if present
   const templateDependenciesPath = path.join(
@@ -130,7 +130,7 @@ module.exports = function(
   }
 
   // Install gideo
-  args = default_args.concat(['@robo54/gideo']);
+  args = defaultArgs.concat(['@robo54/gideo']);
   console.log(`Installing gideo using ${command}...`);
   console.log();
   const proc = spawn.sync(command, args, { stdio: 'inherit' });
