@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Gideo from '@operador6/gideo';
+import Gideo from '@robo54/gideo';
 
 class Project extends Component {
   render() {

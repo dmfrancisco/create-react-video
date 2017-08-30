@@ -1,7 +1,15 @@
 {
-  "name": "@operador6/gideo",
+  "name": "@robo54/gideo",
   "version": "0.1.0",
-  "description": "gideo React component",
+  "description": "Component library for creating videos with React",
+  "repository": "robo54/create-react-video",
+  "license": "GPL-3.0",
+  "engines": {
+    "node": ">=6"
+  },
+  "bugs": {
+    "url": "https://github.com/robo54/create-react-video/issues"
+  },
   "main": "lib/index.js",
   "module": "es/index.js",
   "files": [
@@ -43,10 +51,6 @@
     "react-dom": "^15.6.1",
     "watch": "^1.0.2"
   },
-  "author": "",
-  "homepage": "",
-  "license": "MIT",
-  "repository": "",
   "keywords": [
     "react-component"
   ],

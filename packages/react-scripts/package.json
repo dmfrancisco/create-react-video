@@ -1,14 +1,14 @@
 {
-  "name": "@operador6/react-scripts",
+  "name": "@robo54/react-scripts",
   "version": "0.1.0",
-  "description": "Configuration and scripts for Create React App.",
-  "repository": "facebookincubator/create-react-app",
+  "description": "Configuration and scripts for Create React Video.",
+  "repository": "robo54/create-react-video",
   "license": "BSD-3-Clause",
   "engines": {
     "node": ">=6"
   },
   "bugs": {
-    "url": "https://github.com/facebookincubator/create-react-app/issues"
+    "url": "https://github.com/robo54/create-react-video/issues"
   },
   "files": [
     "bin",

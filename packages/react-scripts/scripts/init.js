@@ -130,7 +130,7 @@ module.exports = function(
   }
 
   // Install gideo
-  args = default_args.concat(['@operador6/gideo']);
+  args = default_args.concat(['@robo54/gideo']);
   console.log(`Installing gideo using ${command}...`);
   console.log();
   const proc = spawn.sync(command, args, { stdio: 'inherit' });
