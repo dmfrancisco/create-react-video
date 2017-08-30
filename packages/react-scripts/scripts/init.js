@@ -129,9 +129,9 @@ module.exports = function(
     }
   }
 
-  // Install gideo
-  args = defaultArgs.concat(['@robo54/gideo']);
-  console.log(`Installing gideo using ${command}...`);
+  // Install gideo and electron
+  args = defaultArgs.concat(['@robo54/gideo', 'electron']);
+  console.log(`Installing gideo and electron using ${command}...`);
   console.log();
   const proc = spawn.sync(command, args, { stdio: 'inherit' });
   if (proc.status !== 0) {
