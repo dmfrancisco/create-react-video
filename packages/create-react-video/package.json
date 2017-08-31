@@ -1,0 +1,15 @@
+{
+  "name": "create-react-video",
+  "version": "0.1.0",
+  "description": "Create simple videos with React",
+  "repository": "robo54/create-react-video",
+  "main": "index.js",
+  "bin": {
+    "create-react-video": "./index.js"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "create-react-app": "^1.4.0",
+    "npm-run": "^4.1.2"
+  }
+}
