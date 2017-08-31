@@ -1,6 +1,6 @@
 {
   "name": "@robo54/gideo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Component library for creating videos with React",
   "repository": "robo54/create-react-video",
   "license": "GPL-3.0",

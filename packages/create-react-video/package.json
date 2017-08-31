@@ -1,6 +1,6 @@
 {
   "name": "create-react-video",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Create simple videos with React",
   "repository": "robo54/create-react-video",
   "main": "index.js",
