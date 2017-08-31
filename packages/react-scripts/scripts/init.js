@@ -160,14 +160,6 @@ module.exports = function(
   console.log('    Starts the development server.');
   console.log();
   console.log(
-    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}build`)
-  );
-  console.log('    Bundles the app into static files for production.');
-  console.log();
-  console.log(chalk.cyan(`  ${displayedCommand} test`));
-  console.log('    Starts the test runner.');
-  console.log();
-  console.log(
     chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}eject`)
   );
   console.log(
