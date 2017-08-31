@@ -40,6 +40,7 @@ module.exports = function(
   // Setup the script rules
   appPackage.scripts = {
     start: 'react-scripts start',
+    eject: 'react-scripts eject',
   };
 
   fs.writeFileSync(
